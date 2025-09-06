@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
-            wrappedQuery[name] = proto[name].bind(originalQuery)
-          }
-        })
-        proto = Object.getPrototypeOf(proto)
-      }
+      const wrappedQuery: any = {}
       
       // Copy all properties from originalQuery to wrappedQuery
       for (const key in originalQuery) {
@@ -20,6 +16,10 @@ import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
       while (proto && proto !== Object.prototype) {
         Object.getOwnPropertyNames(proto).forEach(name => {
           if (name !== 'constructor' && typeof proto[name] === 'function' && !wrappedQuery[name]) {
+          }
+        }
+        )
+      }
 import { useBusinessInfo } from '../hooks/useBusinessInfo'
 
 export function Contact() {
