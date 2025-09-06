@@ -36,7 +36,7 @@ export function AdminSettings() {
     google_place_id: ''
   })
 
-  const [loading, setLoading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [logoPreview, setLogoPreview] = useState('')
   const [importingReviews, setImportingReviews] = useState(false)
@@ -84,8 +84,7 @@ export function AdminSettings() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const [submitting, setSubmitting] = useState(false)
-    setSubmitting(true)
+    setIsSaving(true)
 
     try {
       const dbSettings = {
@@ -119,7 +118,7 @@ export function AdminSettings() {
       alert('Erro ao salvar configurações. Tente novamente.')
     }
 
-    setSubmitting(false)
+    setIsSaving(false)
   }
 
   const importGoogleReviews = async () => {
@@ -491,7 +490,7 @@ export function AdminSettings() {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={loading}
+            disabled={isSaving}
             className={`px-6 py-2 rounded-lg font-bold inline-flex items-center transition-colors ${
               saved
                 ? 'bg-green-600 text-white'
@@ -499,7 +498,7 @@ export function AdminSettings() {
             }`}
           >
             <Save className="h-4 w-4 mr-2" />
-            {loading ? 'Salvando...' : saved ? 'Salvo!' : 'Salvar Configurações'}
+            {isSaving ? 'Salvando...' : saved ? 'Salvo!' : 'Salvar Configurações'}
           </button>
         </div>
       </form>
