@@ -55,9 +55,10 @@ export function AdminLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Contatos', href: '/admin/contacts', icon: MessageSquare },
     { name: 'Projetos', href: '/admin/projects', icon: Image },
     { name: 'Categorias', href: '/admin/categories', icon: FolderOpen },
-    { name: 'Depoimentos', href: '/admin/testimonials', icon: MessageSquare },
+    { name: 'Depoimentos', href: '/admin/testimonials', icon: User },
     { name: 'Blog', href: '/admin/blog', icon: FileText },
     { name: 'Tema', href: '/admin/theme', icon: Settings },
     { name: 'Configurações', href: '/admin/settings', icon: Settings },

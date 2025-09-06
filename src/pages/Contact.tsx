@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -19,25 +20,83 @@ export function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    try {
+      // 1. Salvar no Supabase
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email || null,
+            phone: formData.phone,
+            event_type: formData.eventType || null,
+            event_date: formData.eventDate || null,
+            location: formData.location || null,
+            message: formData.message || null,
+            status: 'new'
+          }
+        ])
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      // 2. Enviar notificação via WhatsApp
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-whatsapp-notification`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            submission: {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              event_type: formData.eventType,
+              event_date: formData.eventDate,
+              location: formData.location,
+              message: formData.message
+            }
+          })
+        })
+
+        const result = await response.json()
+        
+        if (result.success && result.whatsappUrl) {
+          // Abrir WhatsApp em nova aba (opcional)
+          // window.open(result.whatsappUrl, '_blank')
+        }
+      } catch (whatsappError) {
+        console.error('Erro ao enviar notificação WhatsApp:', whatsappError)
+        // Continua mesmo se a notificação falhar
+      }
+
+      setSubmitted(true)
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setSubmitted(false)
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          eventType: '',
+          eventDate: '',
+          location: '',
+          message: ''
+        })
+      }, 3000)
+
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error)
+      alert('Erro ao enviar mensagem. Tente novamente ou entre em contato via WhatsApp.')
+    }
     
-    setSubmitted(true)
     setIsSubmitting(false)
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false)
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        eventType: '',
-        eventDate: '',
-        location: '',
-        message: ''
-      })
-    }, 3000)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
