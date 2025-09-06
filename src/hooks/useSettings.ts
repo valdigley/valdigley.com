@@ -1,0 +1,98 @@
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
+
+interface SiteSettings {
+  site_title: string
+  site_description: string
+  contact_email: string
+  contact_phone: string
+  contact_address: string
+  instagram_url: string
+  logo_url: string
+  hero_images: string[]
+  seo_keywords: string
+}
+
+const defaultSettings: SiteSettings = {
+  site_title: 'Valdigley Fotografia',
+  site_description: 'Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza',
+  contact_email: 'contato@valdigley.com',
+  contact_phone: '+55 85 99999-9999',
+  contact_address: 'Fortaleza, Ceará - Atendemos Jericoacoara, Sobral e região',
+  instagram_url: 'https://instagram.com/valdigleyfoto',
+  logo_url: '',
+  hero_images: [
+    'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg',
+    'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
+    'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg'
+  ],
+  seo_keywords: 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal'
+}
+
+export function useSettings() {
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .single()
+
+      if (!error && data) {
+        // Mapear os dados do banco para o formato esperado
+        const mappedSettings: SiteSettings = {
+          site_title: data.studio_name || defaultSettings.site_title,
+          site_description: defaultSettings.site_description,
+          contact_email: defaultSettings.contact_email,
+          contact_phone: data.studio_phone || defaultSettings.contact_phone,
+          contact_address: data.studio_address || defaultSettings.contact_address,
+          instagram_url: defaultSettings.instagram_url,
+          logo_url: data.studio_logo_url || '',
+          hero_images: defaultSettings.hero_images,
+          seo_keywords: defaultSettings.seo_keywords
+        }
+        setSettings(mappedSettings)
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    }
+    setLoading(false)
+  }
+
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
+    try {
+      // Mapear para o formato do banco
+      const dbSettings = {
+        studio_name: newSettings.site_title,
+        studio_phone: newSettings.contact_phone,
+        studio_address: newSettings.contact_address,
+        studio_logo_url: newSettings.logo_url
+      }
+
+      const { error } = await supabase
+        .from('settings')
+        .upsert(dbSettings)
+
+      if (!error) {
+        setSettings(prev => ({ ...prev, ...newSettings }))
+        return true
+      }
+    } catch (error) {
+      console.error('Error updating settings:', error)
+    }
+    return false
+  }
+
+  return {
+    settings,
+    loading,
+    updateSettings,
+    refetch: fetchSettings
+  }
+}
