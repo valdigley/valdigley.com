@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useBusinessInfo } from '../../hooks/useBusinessInfo'
-
+import { useSettings } from '../../hooks/useSettings'
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const { businessInfo } = useBusinessInfo()
+  const { settings } = useSettings()
   
-  // Imagens padrão do hero - podem ser configuradas separadamente
-  const heroImages = [
-    'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg',
-    'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
-    'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg'
-  ].map(url => 
+  const heroImages = settings.hero_images.map(url => 
     url.includes('?') ? url : `${url}?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop`
   )
 

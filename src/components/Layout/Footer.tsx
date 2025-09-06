@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useBusinessInfo } from '../../hooks/useBusinessInfo'
+import { useSettings } from '../../hooks/useSettings'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const { businessInfo } = useBusinessInfo()
+  const { settings } = useSettings()
 
-  const logoUrl = '' // Logo será configurado separadamente
-  const siteTitle = businessInfo.name
-  const contactEmail = businessInfo.email
-  const contactPhone = businessInfo.whatsapp
-  const contactAddress = `${businessInfo.address}, ${businessInfo.city} - ${businessInfo.state}, ${businessInfo.zip_code}`
-  const instagramUrl = businessInfo.instagram
+  const logoUrl = settings.logo_url
+  const siteTitle = settings.site_title
+  const contactEmail = settings.contact_email
+  const contactPhone = settings.contact_phone
+  const contactAddress = settings.contact_address
+  const instagramUrl = settings.instagram_url
 
   return (
     <footer className="bg-gray-900 dark:bg-gray-950 text-white transition-colors">

@@ -1,6 +1,21 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
-import { supabase } from '../lib/supabase'
+      const wrappedQuery: any = {}
+      
+      // Copy all properties from originalQuery to wrappedQuery
+      for (const key in originalQuery) {
+        if (typeof originalQuery[key] === 'function') {
+          wrappedQuery[key] = originalQuery[key].bind(originalQuery)
+        } else {
+          wrappedQuery[key] = originalQuery[key]
+        }
+      }
+      
+      // Also copy prototype methods
+      let proto = Object.getPrototypeOf(originalQuery)
+      while (proto && proto !== Object.prototype) {
+        Object.getOwnPropertyNames(proto).forEach(name => {
+          if (name !== 'constructor' && typeof proto[name] === 'function' && !wrappedQuery[name]) {
 import { useBusinessInfo } from '../hooks/useBusinessInfo'
 
 export function Contact() {

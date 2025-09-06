@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '../../contexts/ThemeContext'
-import { useBusinessInfo } from '../../hooks/useBusinessInfo'
+import { useSettings } from '../../hooks/useSettings'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { settings, toggleTheme, isDark } = useTheme()
-  const { businessInfo } = useBusinessInfo()
+  const { settings: siteSettings } = useSettings()
 
-  const logoUrl = '' // Logo será configurado separadamente
-  const siteTitle = businessInfo.name
+  const logoUrl = siteSettings.logo_url
+  const siteTitle = siteSettings.site_title
 
   const getThemeIcon = () => {
     switch (settings.theme) {
