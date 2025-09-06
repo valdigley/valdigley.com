@@ -57,13 +57,21 @@ export function useBusinessInfo() {
 
   const updateBusinessInfo = async (newInfo: Partial<BusinessInfo>) => {
     try {
+      // Prepare the payload, removing empty id to let Supabase handle UUID generation
+      const payload = {
+        ...businessInfo,
+        ...newInfo,
+        updated_at: new Date().toISOString()
+      }
+      
+      // Remove empty id to allow Supabase to generate UUID for new records
+      if (!payload.id || payload.id === '') {
+        delete payload.id
+      }
+
       const { error } = await supabase
         .from('business_info')
-        .upsert({
-          ...businessInfo,
-          ...newInfo,
-          updated_at: new Date().toISOString()
-        })
+        .upsert(payload)
 
       if (!error) {
         setBusinessInfo(prev => ({ ...prev, ...newInfo }))
