@@ -72,7 +72,7 @@ const createRealSupabaseClient = () => {
             
             // If it's a promise, catch 404 errors
             if (result && result.then) {
-              return result.catch((error: any) => {
+              return Promise.resolve(result).catch((error: any) => {
                 if (error?.message?.includes('Could not find the table') || 
                     error?.code === 'PGRST205' ||
                     error?.status === 404) {
