@@ -57,7 +57,7 @@ const createRealSupabaseClient = () => {
       const wrappedQuery = { ...originalQuery }
       
       // Wrap methods that return promises
-      const methodsToWrap = ['select', 'insert', 'update', 'delete', 'upsert']
+      const methodsToWrap = ['select', 'insert', 'update', 'delete', 'upsert', 'single', 'maybeSingle']
       
       methodsToWrap.forEach(method => {
         if (originalQuery[method]) {
@@ -89,7 +89,7 @@ const createRealSupabaseClient = () => {
       })
       
       // Wrap chaining methods
-      const chainingMethods = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'like', 'ilike', 'is', 'in', 'contains', 'containedBy', 'rangeGt', 'rangeGte', 'rangeLt', 'rangeLte', 'rangeAdjacent', 'overlaps', 'textSearch', 'match', 'not', 'or', 'filter', 'order', 'limit', 'range', 'single', 'maybeSingle']
+      const chainingMethods = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'like', 'ilike', 'is', 'in', 'contains', 'containedBy', 'rangeGt', 'rangeGte', 'rangeLt', 'rangeLte', 'rangeAdjacent', 'overlaps', 'textSearch', 'match', 'not', 'or', 'filter', 'order', 'limit', 'range']
       
       chainingMethods.forEach(method => {
         if (originalQuery[method]) {
