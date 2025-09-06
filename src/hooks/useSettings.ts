@@ -11,6 +11,9 @@ interface SiteSettings {
   logo_url: string
   hero_images: string[]
   seo_keywords: string
+  google_reviews_enabled: boolean
+  google_places_api_key: string
+  google_place_id: string
 }
 
 const defaultSettings: SiteSettings = {
@@ -26,7 +29,10 @@ const defaultSettings: SiteSettings = {
     'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
     'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg'
   ],
-  seo_keywords: 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal'
+  seo_keywords: 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal',
+  google_reviews_enabled: false,
+  google_places_api_key: '',
+  google_place_id: ''
 }
 
 export function useSettings() {
@@ -55,7 +61,10 @@ export function useSettings() {
           instagram_url: defaultSettings.instagram_url,
           logo_url: data.studio_logo_url || '',
           hero_images: defaultSettings.hero_images,
-          seo_keywords: defaultSettings.seo_keywords
+          seo_keywords: defaultSettings.seo_keywords,
+          google_reviews_enabled: data.google_reviews_enabled || false,
+          google_places_api_key: data.google_places_api_key || '',
+          google_place_id: data.google_place_id || ''
         }
         setSettings(mappedSettings)
       }
@@ -72,7 +81,10 @@ export function useSettings() {
         studio_name: newSettings.site_title,
         studio_phone: newSettings.contact_phone,
         studio_address: newSettings.contact_address,
-        studio_logo_url: newSettings.logo_url
+        studio_logo_url: newSettings.logo_url,
+        google_reviews_enabled: newSettings.google_reviews_enabled,
+        google_places_api_key: newSettings.google_places_api_key,
+        google_place_id: newSettings.google_place_id
       }
 
       const { error } = await supabase

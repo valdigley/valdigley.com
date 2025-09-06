@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Save, Image, Globe, Mail, Phone, MapPin, Instagram, Upload, X } from 'lucide-react'
+import { Save, Image, Globe, Mail, Phone, MapPin, Instagram, Upload, X, Star, Info } from 'lucide-react'
 
 interface Settings {
   site_title: string
@@ -11,6 +11,9 @@ interface Settings {
   logo_url: string
   hero_images: string[]
   seo_keywords: string
+  google_reviews_enabled: boolean
+  google_places_api_key: string
+  google_place_id: string
 }
 
 export function AdminSettings() {
@@ -27,12 +30,16 @@ export function AdminSettings() {
       'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
       'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg'
     ],
-    seo_keywords: 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal'
+    seo_keywords: 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal',
+    google_reviews_enabled: false,
+    google_places_api_key: '',
+    google_place_id: ''
   })
 
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [logoPreview, setLogoPreview] = useState('')
+  const [importingReviews, setImportingReviews] = useState(false)
 
   useEffect(() => {
     setLogoPreview(settings.logo_url)
@@ -55,6 +62,38 @@ export function AdminSettings() {
     }
 
     setLoading(false)
+  }
+
+  const importGoogleReviews = async () => {
+    if (!settings.google_places_api_key || !settings.google_place_id) {
+      alert('Configure primeiro a API Key e Place ID do Google')
+      return
+    }
+
+    setImportingReviews(true)
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-google-reviews`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        alert(`✅ ${result.imported} depoimentos importados com sucesso!`)
+      } else {
+        alert(`❌ Erro: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao importar reviews:', error)
+      alert('❌ Erro ao importar depoimentos do Google')
+    }
+    
+    setImportingReviews(false)
   }
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -305,6 +344,89 @@ export function AdminSettings() {
               Nenhuma imagem adicionada. Clique em "Adicionar Imagem" para começar.
             </p>
           )}
+        </div>
+
+        {/* Google Reviews Integration */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="flex items-center mb-4">
+            <Star className="h-6 w-6 text-amber-600 mr-2" />
+            <h2 className="text-xl font-bold">Integração Google Reviews</h2>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700">
+                Importar depoimentos do Google automaticamente
+              </label>
+              <button
+                type="button"
+                onClick={() => setSettings(prev => ({ ...prev, google_reviews_enabled: !prev.google_reviews_enabled }))}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  settings.google_reviews_enabled ? 'bg-amber-600' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.google_reviews_enabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Google Places API Key
+                </label>
+                <input
+                  type="password"
+                  value={settings.google_places_api_key}
+                  onChange={(e) => setSettings(prev => ({ ...prev, google_places_api_key: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                  placeholder="Sua API Key do Google Places"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  <a href="https://developers.google.com/maps/documentation/places/web-service/get-api-key" target="_blank" className="text-amber-600 hover:underline">
+                    Como obter API Key
+                  </a>
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Google Place ID
+                </label>
+                <input
+                  type="text"
+                  value={settings.google_place_id}
+                  onChange={(e) => setSettings(prev => ({ ...prev, google_place_id: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                  placeholder="Place ID do seu negócio"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" className="text-amber-600 hover:underline">
+                    Como encontrar Place ID
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={importGoogleReviews}
+                disabled={importingReviews || !settings.google_places_api_key || !settings.google_place_id}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
+                {importingReviews ? 'Importando...' : 'Importar Depoimentos Agora'}
+              </button>
+              
+              <div className="text-sm text-gray-600 flex items-center">
+                <Info className="h-4 w-4 mr-1" />
+                Apenas reviews com 4+ estrelas serão importados
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Save Button */}

@@ -9,6 +9,14 @@ interface Testimonial {
   rating: number
   is_featured: boolean
   created_at: string
+  google_review_id?: string
+  google_data?: {
+    author_url?: string
+    profile_photo_url?: string
+    relative_time?: string
+    language?: string
+    timestamp?: number
+  }
 }
 
 export function AdminTestimonials() {
@@ -60,7 +68,9 @@ export function AdminTestimonials() {
             content: 'A qualidade das fotos é impressionante. Valdigley tem um olhar artístico excepcional.',
             rating: 5,
             is_featured: false,
-            created_at: '2024-03-10'
+            created_at: '2024-03-10',
+            google_review_id: null,
+            google_data: null
           }
         ])
       }
@@ -80,7 +90,9 @@ export function AdminTestimonials() {
           content: 'Profissional incrível! Nos deixou super à vontade durante todo o ensaio. O resultado superou nossas expectativas.',
           rating: 5,
           is_featured: true,
-          created_at: '2024-02-20'
+          created_at: '2024-02-20',
+          google_review_id: null,
+          google_data: null
         }
       ])
     }
@@ -256,6 +268,11 @@ export function AdminTestimonials() {
               <div className="flex items-center space-x-2">
                 <MessageSquare className="h-5 w-5 text-amber-600" />
                 <h3 className="font-semibold text-gray-900">{testimonial.client_name}</h3>
+                {testimonial.google_review_id && (
+                  <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Google
+                  </span>
+                )}
                 {testimonial.is_featured && (
                   <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-1 rounded-full">
                     Destaque
@@ -275,18 +292,22 @@ export function AdminTestimonials() {
                 >
                   <Star className={`h-4 w-4 ${testimonial.is_featured ? 'fill-current' : ''}`} />
                 </button>
-                <button
-                  onClick={() => handleEdit(testimonial)}
-                  className="text-blue-600 hover:text-blue-800 p-1"
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(testimonial.id)}
-                  className="text-red-600 hover:text-red-800 p-1"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                {!testimonial.google_review_id && (
+                  <>
+                    <button
+                      onClick={() => handleEdit(testimonial)}
+                      className="text-blue-600 hover:text-blue-800 p-1"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(testimonial.id)}
+                      className="text-red-600 hover:text-red-800 p-1"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -299,7 +320,14 @@ export function AdminTestimonials() {
             <p className="text-gray-700 mb-4 leading-relaxed">{testimonial.content}</p>
 
             <div className="text-sm text-gray-500">
-              {new Date(testimonial.created_at).toLocaleDateString('pt-BR')}
+              <div className="flex justify-between items-center">
+                <span>{new Date(testimonial.created_at).toLocaleDateString('pt-BR')}</span>
+                {testimonial.google_data?.relative_time && (
+                  <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                    Google: {testimonial.google_data.relative_time}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         ))}
