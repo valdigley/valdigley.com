@@ -22,6 +22,7 @@ import { AdminSettings } from './pages/admin/Settings'
 import { AdminThemeSettings } from './pages/admin/ThemeSettings'
 import { ContactSubmissions } from './pages/admin/ContactSubmissions'
 import { AdminBusinessInfo } from './pages/admin/BusinessInfo'
+import Contact from './pages/Contact'
 
 function App() {
   return (
