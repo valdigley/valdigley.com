@@ -54,7 +54,7 @@ const createRealSupabaseClient = () => {
     
     // Wrap query methods to handle 404 errors gracefully
     const wrapQuery = (originalQuery: any) => {
-      const wrappedQuery = { ...originalQuery }
+      const wrappedQuery = Object.create(originalQuery)
       
       // Wrap methods that return promises
       const methodsToWrap = ['select', 'insert', 'update', 'delete', 'upsert', 'single', 'maybeSingle']
