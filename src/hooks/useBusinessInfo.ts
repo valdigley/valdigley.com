@@ -12,8 +12,8 @@ interface BusinessInfo {
   instagram: string
   document: string
   zip_code: string
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 const defaultBusinessInfo: BusinessInfo = {
@@ -27,8 +27,8 @@ const defaultBusinessInfo: BusinessInfo = {
   instagram: 'https://instagram.com/valdigleyfoto',
   document: '123.456.789-00',
   zip_code: '60000-000',
-  created_at: '',
-  updated_at: ''
+  created_at: null,
+  updated_at: null
 }
 
 export function useBusinessInfo() {
