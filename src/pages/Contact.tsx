@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+
+export default function Contact({ settings }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
