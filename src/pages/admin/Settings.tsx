@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 import { Save, Image, Globe, Mail, Phone, MapPin, Instagram, Upload, X, Star, Info } from 'lucide-react'
 
 interface Settings {
