@@ -44,7 +44,9 @@ export function useBusinessInfo() {
       const { data, error } = await supabase
         .from('business_info')
         .select('*')
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
       if (!error && data) {
         setBusinessInfo(data)
@@ -57,25 +59,36 @@ export function useBusinessInfo() {
 
   const updateBusinessInfo = async (newInfo: Partial<BusinessInfo>) => {
     try {
-      // Prepare the payload, removing empty id to let Supabase handle UUID generation
-      const payload = {
-        ...businessInfo,
-        ...newInfo,
-        updated_at: new Date().toISOString()
-      }
-      
-      // Remove empty id to allow Supabase to generate UUID for new records
-      if (!payload.id || payload.id === '') {
-        delete payload.id
-      }
+      if (businessInfo.id && businessInfo.id !== '') {
+        // Update existing record
+        const { error } = await supabase
+          .from('business_info')
+          .update({
+            ...newInfo,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', businessInfo.id)
 
-      const { error } = await supabase
-        .from('business_info')
-        .upsert(payload)
+        if (!error) {
+          setBusinessInfo(prev => ({ ...prev, ...newInfo }))
+          return true
+        }
+      } else {
+        // Insert new record
+        const { data, error } = await supabase
+          .from('business_info')
+          .insert({
+            ...businessInfo,
+            ...newInfo,
+            updated_at: new Date().toISOString()
+          })
+          .select()
+          .single()
 
-      if (!error) {
-        setBusinessInfo(prev => ({ ...prev, ...newInfo }))
-        return true
+        if (!error && data) {
+          setBusinessInfo(data)
+          return true
+        }
       }
     } catch (error) {
       console.error('Error updating business info:', error)

@@ -49,13 +49,17 @@ export function useSettings() {
       const { data: businessData, error: businessError } = await supabase
         .from('business_info')
         .select('*')
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
       // Buscar dados da tabela settings
       const { data: settingsData, error: settingsError } = await supabase
         .from('settings')
         .select('*')
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
       if (!businessError && businessData) {
         const mappedSettings: SiteSettings = {
