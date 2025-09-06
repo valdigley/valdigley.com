@@ -60,7 +60,7 @@ const createRealSupabaseClient = () => {
       const methodsToWrap = ['select', 'insert', 'update', 'delete', 'upsert', 'single', 'maybeSingle']
       
       methodsToWrap.forEach(method => {
-        if (originalQuery[method]) {
+        if (typeof originalQuery[method] === 'function') {
           const originalMethod = originalQuery[method].bind(originalQuery)
           wrappedQuery[method] = (...args: any[]) => {
             const result = originalMethod(...args)
@@ -92,7 +92,7 @@ const createRealSupabaseClient = () => {
       const chainingMethods = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'like', 'ilike', 'is', 'in', 'contains', 'containedBy', 'rangeGt', 'rangeGte', 'rangeLt', 'rangeLte', 'rangeAdjacent', 'overlaps', 'textSearch', 'match', 'not', 'or', 'filter', 'order', 'limit', 'range']
       
       chainingMethods.forEach(method => {
-        if (originalQuery[method]) {
+        if (typeof originalQuery[method] === 'function') {
           const originalMethod = originalQuery[method].bind(originalQuery)
           wrappedQuery[method] = (...args: any[]) => {
             const result = originalMethod(...args)
