@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useSettings } from '../../hooks/useSettings'
 
-const heroImages = [
-  'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-  'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-  'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-]
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const { settings } = useSettings()
+  
+  const heroImages = settings.hero_images.map(url => 
+    url.includes('?') ? url : `${url}?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop`
+  )
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [])
+  }, [heroImages.length])
 
   return (
     <section className="relative h-screen overflow-hidden">
@@ -48,7 +49,7 @@ export function HeroSection() {
             <span className="block text-amber-400">Únicos</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto">
-            Foto e filmagem de casamento em Jericoacoara, Sobral e Fortaleza
+            {settings.site_description}
           </p>
           <Link
             to="/portfolio"

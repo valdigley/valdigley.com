@@ -4,15 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valdigley Fotografia - Casamentos em Jericoacoara, Sobral e Fortaleza</title>
-    <meta name="description" content="Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza. Capturando momentos únicos há mais de 10 anos." />
-    <meta name="keywords" content="fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal" />
-    <meta property="og:title" content="Valdigley Fotografia - Casamentos em Jericoacoara, Sobral e Fortaleza" />
-    <meta property="og:description" content="Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza. Capturando momentos únicos há mais de 10 anos." />
+    <title id="page-title">Valdigley Fotografia - Casamentos em Jericoacoara, Sobral e Fortaleza</title>
+    <meta id="page-description" name="description" content="Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza. Capturando momentos únicos há mais de 10 anos." />
+    <meta id="page-keywords" name="keywords" content="fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal" />
+    <meta id="og-title" property="og:title" content="Valdigley Fotografia - Casamentos em Jericoacoara, Sobral e Fortaleza" />
+    <meta id="og-description" property="og:description" content="Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza. Capturando momentos únicos há mais de 10 anos." />
     <meta property="og:type" content="website" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Atualizar meta tags dinamicamente quando as configurações carregarem
+      window.updateSEO = function(settings) {
+        if (settings.site_title) {
+          document.title = settings.site_title;
+          document.getElementById('page-title').content = settings.site_title;
+          document.getElementById('og-title').content = settings.site_title;
+        }
+        if (settings.site_description) {
+          document.getElementById('page-description').content = settings.site_description;
+          document.getElementById('og-description').content = settings.site_description;
+        }
+        if (settings.seo_keywords) {
+          document.getElementById('page-keywords').content = settings.seo_keywords;
+        }
+      };
+    </script>
   </body>
 </html>

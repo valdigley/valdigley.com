@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useSettings } from '../hooks/useSettings'
 
 export function Contact() {
+  const { settings } = useSettings()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -129,9 +131,9 @@ export function Contact() {
                 <Phone className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">Telefone & WhatsApp</h3>
-                  <p className="text-gray-600">+55 85 99999-9999</p>
+                  <p className="text-gray-600">{settings.contact_phone}</p>
                   <a 
-                    href="https://wa.me/5585999999999" 
+                    href={`https://wa.me/${settings.contact_phone.replace(/\D/g, '')}`}
                     target="_blank"
                     className="text-amber-600 hover:underline text-sm"
                   >
@@ -144,7 +146,7 @@ export function Contact() {
                 <Mail className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">E-mail</h3>
-                  <p className="text-gray-600">contato@valdigley.com</p>
+                  <p className="text-gray-600">{settings.contact_email}</p>
                 </div>
               </div>
 
@@ -153,11 +155,11 @@ export function Contact() {
                 <div>
                   <h3 className="font-semibold mb-1">Instagram</h3>
                   <a 
-                    href="https://instagram.com/valdigleyfoto" 
+                    href={settings.instagram_url}
                     target="_blank"
                     className="text-amber-600 hover:underline"
                   >
-                    @valdigleyfoto
+                    {settings.instagram_url.replace('https://instagram.com/', '@')}
                   </a>
                 </div>
               </div>
@@ -166,8 +168,7 @@ export function Contact() {
                 <MapPin className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">Localização</h3>
-                  <p className="text-gray-600">Fortaleza, Ceará</p>
-                  <p className="text-sm text-gray-500">Atendemos Jericoacoara, Sobral e região</p>
+                  <p className="text-gray-600">{settings.contact_address}</p>
                 </div>
               </div>
 

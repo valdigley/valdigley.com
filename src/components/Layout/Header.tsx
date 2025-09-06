@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '../../contexts/ThemeContext'
+import { useSettings } from '../../hooks/useSettings'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { settings, toggleTheme, isDark } = useTheme()
-  const [logoUrl, setLogoUrl] = useState('')
+  const { settings: siteSettings } = useSettings()
 
-  // Em uma implementação real, você buscaria a logo das configurações
-  // const logoUrl = settings.logo_url || ''
+  const logoUrl = siteSettings.logo_url
+  const siteTitle = siteSettings.site_title
 
   const getThemeIcon = () => {
     switch (settings.theme) {
@@ -30,12 +31,12 @@ export function Header() {
             {logoUrl ? (
               <img 
                 src={logoUrl} 
-                alt="Valdigley Fotografia" 
+                alt={siteTitle}
                 className="h-10 w-auto max-w-[200px] object-contain"
               />
             ) : (
               <span className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>
-                Valdigley Fotografia
+                {siteTitle}
               </span>
             )}
           </Link>

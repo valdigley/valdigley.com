@@ -51,22 +51,26 @@ export function useSettings() {
         .single()
 
       if (!error && data) {
-        // Mapear os dados do banco para o formato esperado
         const mappedSettings: SiteSettings = {
-          site_title: data.studio_name || defaultSettings.site_title,
-          site_description: defaultSettings.site_description,
-          contact_email: defaultSettings.contact_email,
+          site_title: data.site_title || data.studio_name || defaultSettings.site_title,
+          site_description: data.site_description || defaultSettings.site_description,
+          contact_email: data.contact_email || defaultSettings.contact_email,
           contact_phone: data.studio_phone || defaultSettings.contact_phone,
           contact_address: data.studio_address || defaultSettings.contact_address,
-          instagram_url: defaultSettings.instagram_url,
+          instagram_url: data.instagram_url || defaultSettings.instagram_url,
           logo_url: data.studio_logo_url || '',
-          hero_images: defaultSettings.hero_images,
-          seo_keywords: defaultSettings.seo_keywords,
+          hero_images: data.hero_images ? (Array.isArray(data.hero_images) ? data.hero_images : JSON.parse(data.hero_images)) : defaultSettings.hero_images,
+          seo_keywords: data.seo_keywords || defaultSettings.seo_keywords,
           google_reviews_enabled: data.google_reviews_enabled || false,
           google_places_api_key: data.google_places_api_key || '',
           google_place_id: data.google_place_id || ''
         }
         setSettings(mappedSettings)
+        
+        // Atualizar SEO dinamicamente
+        if (typeof window !== 'undefined' && window.updateSEO) {
+          window.updateSEO(mappedSettings)
+        }
       }
     } catch (error) {
       console.error('Error fetching settings:', error)
@@ -76,9 +80,14 @@ export function useSettings() {
 
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     try {
-      // Mapear para o formato do banco
       const dbSettings = {
-        studio_name: newSettings.site_title,
+        site_title: newSettings.site_title,
+        site_description: newSettings.site_description,
+        contact_email: newSettings.contact_email,
+        instagram_url: newSettings.instagram_url,
+        seo_keywords: newSettings.seo_keywords,
+        hero_images: newSettings.hero_images ? JSON.stringify(newSettings.hero_images) : undefined,
+        studio_name: newSettings.site_title, // Manter compatibilidade
         studio_phone: newSettings.contact_phone,
         studio_address: newSettings.contact_address,
         studio_logo_url: newSettings.logo_url,
@@ -87,6 +96,12 @@ export function useSettings() {
         google_place_id: newSettings.google_place_id
       }
 
+      // Remover campos undefined
+      Object.keys(dbSettings).forEach(key => {
+        if (dbSettings[key] === undefined) {
+          delete dbSettings[key]
+        }
+      })
       const { error } = await supabase
         .from('settings')
         .upsert(dbSettings)

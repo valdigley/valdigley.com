@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useSettings } from '../../hooks/useSettings'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const [logoUrl, setLogoUrl] = useState('')
+  const { settings } = useSettings()
 
-  // Em uma implementação real, você buscaria a logo das configurações
-  // const logoUrl = settings.logo_url || ''
+  const logoUrl = settings.logo_url
+  const siteTitle = settings.site_title
+  const contactEmail = settings.contact_email
+  const contactPhone = settings.contact_phone
+  const contactAddress = settings.contact_address
+  const instagramUrl = settings.instagram_url
 
   return (
     <footer className="bg-gray-900 dark:bg-gray-950 text-white transition-colors">
@@ -19,34 +24,33 @@ export function Footer() {
               {logoUrl ? (
                 <img 
                   src={logoUrl} 
-                  alt="Valdigley Fotografia" 
+                  alt={siteTitle}
                   className="h-10 w-auto max-w-[200px] object-contain brightness-0 invert"
                 />
               ) : (
-                <span className="text-2xl font-bold">Valdigley Fotografia</span>
+                <span className="text-2xl font-bold">{siteTitle}</span>
               )}
             </Link>
             <p className="text-gray-400 dark:text-gray-500 mb-6 max-w-md">
-              Capturando momentos únicos e eternizando o amor através da fotografia. 
-              Especialista em casamentos e pré-weddings no Ceará.
+              {settings.site_description}
             </p>
             <div className="flex space-x-4">
               <a 
-                href="https://instagram.com/valdigleyfoto" 
+                href={instagramUrl}
                 target="_blank"
                 className="bg-gray-800 dark:bg-gray-900 p-2 rounded-full hover:bg-amber-600 transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a 
-                href="https://wa.me/5585999999999" 
+                href={`https://wa.me/${contactPhone.replace(/\D/g, '')}`}
                 target="_blank"
                 className="bg-gray-800 dark:bg-gray-900 p-2 rounded-full hover:bg-amber-600 transition-colors"
               >
                 <Phone className="h-5 w-5" />
               </a>
               <a 
-                href="mailto:contato@valdigley.com"
+                href={`mailto:${contactEmail}`}
                 className="bg-gray-800 dark:bg-gray-900 p-2 rounded-full hover:bg-amber-600 transition-colors"
               >
                 <Mail className="h-5 w-5" />
@@ -85,17 +89,16 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-gray-400 dark:text-gray-500">
                 <Phone className="h-4 w-4" />
-                <span>+55 85 99999-9999</span>
+                <span>{contactPhone}</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-400 dark:text-gray-500">
                 <Mail className="h-4 w-4" />
-                <span>contato@valdigley.com</span>
+                <span>{contactEmail}</span>
               </div>
               <div className="flex items-start space-x-2 text-gray-400 dark:text-gray-500">
                 <MapPin className="h-4 w-4 mt-0.5" />
                 <div>
-                  <div>Fortaleza, Ceará</div>
-                  <div className="text-sm">Atendemos Jericoacoara, Sobral e região</div>
+                  <div>{contactAddress}</div>
                 </div>
               </div>
             </div>
@@ -105,7 +108,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 dark:border-gray-900 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 dark:text-gray-500 text-sm mb-4 md:mb-0">
-            © {currentYear} Valdigley Fotografia. Todos os direitos reservados.
+            © {currentYear} {siteTitle}. Todos os direitos reservados.
           </p>
           <p className="flex items-center text-gray-400 dark:text-gray-500 text-sm">
             Feito com <Heart className="h-4 w-4 text-red-500 mx-1" /> para eternizar momentos únicos

@@ -40,28 +40,86 @@ export function AdminSettings() {
   const [saved, setSaved] = useState(false)
   const [logoPreview, setLogoPreview] = useState('')
   const [importingReviews, setImportingReviews] = useState(false)
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .single()
+
+      if (!error && data) {
+        setSettings({
+          site_title: data.site_title || data.studio_name || 'Valdigley Fotografia',
+          site_description: data.site_description || 'Fotógrafo especializado em casamentos e pré-weddings em Jericoacoara, Sobral e Fortaleza',
+          contact_email: data.contact_email || 'contato@valdigley.com',
+          contact_phone: data.studio_phone || '+55 85 99999-9999',
+          contact_address: data.studio_address || 'Fortaleza, Ceará - Atendemos Jericoacoara, Sobral e região',
+          instagram_url: data.instagram_url || 'https://instagram.com/valdigleyfoto',
+          logo_url: data.studio_logo_url || '',
+          hero_images: data.hero_images ? (Array.isArray(data.hero_images) ? data.hero_images : JSON.parse(data.hero_images)) : [
+            'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg',
+            'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg',
+            'https://images.pexels.com/photos/265885/pexels-photo-265885.jpeg'
+          ],
+          seo_keywords: data.seo_keywords || 'fotografia casamento, Jericoacoara, Sobral, Fortaleza, pré wedding, ensaio casal',
+          google_reviews_enabled: data.google_reviews_enabled || false,
+          google_places_api_key: data.google_places_api_key || '',
+          google_place_id: data.google_place_id || ''
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    }
+    setLoading(false)
+  }
   useEffect(() => {
     setLogoPreview(settings.logo_url)
   }, [settings.logo_url])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    const [submitting, setSubmitting] = useState(false)
+    setSubmitting(true)
 
     try {
-      // Here you would save to Supabase or your settings storage
-      console.log('Saving settings:', settings)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const dbSettings = {
+        site_title: settings.site_title,
+        site_description: settings.site_description,
+        contact_email: settings.contact_email,
+        instagram_url: settings.instagram_url,
+        seo_keywords: settings.seo_keywords,
+        hero_images: JSON.stringify(settings.hero_images),
+        studio_name: settings.site_title, // Manter compatibilidade
+        studio_phone: settings.contact_phone,
+        studio_address: settings.contact_address,
+        studio_logo_url: settings.logo_url,
+        google_reviews_enabled: settings.google_reviews_enabled,
+        google_places_api_key: settings.google_places_api_key,
+        google_place_id: settings.google_place_id
+      }
+
+      const { error } = await supabase
+        .from('settings')
+        .upsert(dbSettings)
+
+      if (error) {
+        throw error
+      }
       
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
       console.error('Error saving settings:', error)
+      alert('Erro ao salvar configurações. Tente novamente.')
     }
 
-    setLoading(false)
+    setSubmitting(false)
   }
 
   const importGoogleReviews = async () => {
