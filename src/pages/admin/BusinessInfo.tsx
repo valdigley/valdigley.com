@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Save, Building, Phone, Mail, MapPin, Instagram, FileText, Globe } from 'lucide-react'
 import { useBusinessInfo } from '../../hooks/useBusinessInfo'
 
@@ -7,6 +7,10 @@ export function AdminBusinessInfo() {
   const [formData, setFormData] = useState(businessInfo)
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    setFormData(businessInfo)
+  }, [businessInfo])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
