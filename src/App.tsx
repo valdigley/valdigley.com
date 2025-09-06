@@ -21,6 +21,7 @@ import { BlogForm } from './pages/admin/BlogForm'
 import { AdminSettings } from './pages/admin/Settings'
 import { AdminThemeSettings } from './pages/admin/ThemeSettings'
 import { ContactSubmissions } from './pages/admin/ContactSubmissions'
+import { AdminBusinessInfo } from './pages/admin/BusinessInfo'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="business" element={<AdminBusinessInfo />} />
             <Route path="contacts" element={<ContactSubmissions />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/new" element={<ProjectForm />} />

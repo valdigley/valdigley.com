@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { useSettings } from '../hooks/useSettings'
+import { useBusinessInfo } from '../hooks/useBusinessInfo'
 
 export function Contact() {
-  const { settings } = useSettings()
+  const { businessInfo } = useBusinessInfo()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -131,9 +131,9 @@ export function Contact() {
                 <Phone className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">Telefone & WhatsApp</h3>
-                  <p className="text-gray-600">{settings.contact_phone}</p>
+                  <p className="text-gray-600">{businessInfo.whatsapp}</p>
                   <a 
-                    href={`https://wa.me/${settings.contact_phone.replace(/\D/g, '')}`}
+                    href={`https://wa.me/${businessInfo.whatsapp.replace(/\D/g, '')}`}
                     target="_blank"
                     className="text-amber-600 hover:underline text-sm"
                   >
@@ -146,7 +146,7 @@ export function Contact() {
                 <Mail className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">E-mail</h3>
-                  <p className="text-gray-600">{settings.contact_email}</p>
+                  <p className="text-gray-600">{businessInfo.email}</p>
                 </div>
               </div>
 
@@ -155,11 +155,11 @@ export function Contact() {
                 <div>
                   <h3 className="font-semibold mb-1">Instagram</h3>
                   <a 
-                    href={settings.instagram_url}
+                    href={businessInfo.instagram}
                     target="_blank"
                     className="text-amber-600 hover:underline"
                   >
-                    {settings.instagram_url.replace('https://instagram.com/', '@')}
+                    {businessInfo.instagram.replace('https://instagram.com/', '@')}
                   </a>
                 </div>
               </div>
@@ -168,7 +168,8 @@ export function Contact() {
                 <MapPin className="h-6 w-6 text-amber-600 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">Localização</h3>
-                  <p className="text-gray-600">{settings.contact_address}</p>
+                  <p className="text-gray-600">{businessInfo.address}, {businessInfo.city} - {businessInfo.state}</p>
+                  <p className="text-gray-600">CEP: {businessInfo.zip_code}</p>
                 </div>
               </div>
 

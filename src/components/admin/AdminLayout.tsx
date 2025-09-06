@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   Image,
   LayoutDashboard, 
+  Building,
   FolderOpen, 
   MessageSquare, 
   FileText, 
@@ -55,6 +56,7 @@ export function AdminLayout() {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Negócio', href: '/admin/business', icon: Building },
     { name: 'Contatos', href: '/admin/contacts', icon: MessageSquare },
     { name: 'Projetos', href: '/admin/projects', icon: Image },
     { name: 'Categorias', href: '/admin/categories', icon: FolderOpen },
