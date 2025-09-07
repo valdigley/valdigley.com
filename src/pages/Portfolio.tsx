@@ -11,7 +11,7 @@ interface Project {
   location: string
   event_date: string
   cover_image: string
-  categories: { name: string; slug: string }
+  categories: { name: string; slug: string } | null
 }
 
 interface Category {
@@ -170,7 +170,9 @@ export function Portfolio() {
       const { data, error } = await query
 
       if (!error && data && data.length > 0) {
-        setProjects(data)
+        // Filter out projects with null categories
+        const validProjects = data.filter(project => project.categories !== null)
+        setProjects(validProjects)
       } else {
         // Filter mock projects by category if selected
         const filteredProjects = selectedCategory 
@@ -247,9 +249,11 @@ export function Portfolio() {
                   />
                 </div>
                 <div className="p-6">
-                  <span className="inline-block bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-1 rounded-full mb-2">
-                    {project.categories.name}
-                  </span>
+                  {project.categories && (
+                    <span className="inline-block bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-1 rounded-full mb-2">
+                      {project.categories.name}
+                    </span>
+                  )}
                   <h3 className="text-xl font-bold mb-2 group-hover:text-amber-600 transition-colors">
                     {project.client_names}
                   </h3>
