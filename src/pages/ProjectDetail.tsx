@@ -144,14 +144,16 @@ export function ProjectDetail() {
         .select(`
           id, title, client_names, location, event_date, description, cover_image,
           categories:category_id (name, slug),
-          project_media:project_images (id, media_url, media_type, thumbnail_url, alt_text, sort_order)
+            project_media:project_images (id, image_url, sort_order, alt_text)
         `)
         .eq('slug', slug)
         .eq('is_published', true)
         .single()
 
       if (!error && data) {
-        data.project_media.sort((a, b) => a.sort_order - b.sort_order)
+        if (data.project_media) {
+          data.project_media.sort((a, b) => a.sort_order - b.sort_order)
+        }
         setProject(data)
       } else {
         // Use mock data if no data from Supabase
@@ -267,20 +269,20 @@ export function ProjectDetail() {
 
           {/* Image Gallery */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {project.project_images.map((image, index) => (
+            {project.project_media && project.project_media.map((image, index) => (
               <button
                 key={image.id}
                 onClick={() => openLightbox(index)}
                 className="group relative overflow-hidden rounded-lg bg-gray-200 aspect-square hover:shadow-xl transition-all duration-300"
               >
                 <img
-                  src={image.image_url}
+                  src={image.media_url || image.image_url}
                   alt={image.alt_text || `${project.client_names} - Foto ${index + 1}`}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </button>
-            ))}
+            )) || []}
           </div>
 
           {/* Call to Action */}
@@ -332,14 +334,14 @@ export function ProjectDetail() {
             {/* Media Content */}
             {project.project_media[currentImageIndex].media_type === 'image' ? (
               <img
-                src={project.project_media[currentImageIndex].media_url}
+                src={project.project_media[currentImageIndex].media_url || project.project_media[currentImageIndex].image_url}
                 alt={project.project_media[currentImageIndex].alt_text || `${project.client_names} - Foto ${currentImageIndex + 1}`}
                 className="max-w-full max-h-full object-contain"
               />
             ) : (
               <div className="max-w-4xl max-h-full">
                 <iframe
-                  src={project.project_media[currentImageIndex].media_url}
+                  src={project.project_media[currentImageIndex].media_url || project.project_media[currentImageIndex].image_url}
                   className="w-full h-96 rounded-lg"
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
