@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Phone, Mail, Instagram, MapPin, Clock, Heart } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useSettings } from '../hooks/useSettings'
 
-export default function Contact({ settings }) {
+export default function Contact() {
+  const { settings } = useSettings()
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -104,6 +107,18 @@ export default function Contact({ settings }) {
       ...prev,
       [e.target.name]: e.target.value
     }))
+  }
+
+  // Show loading state while settings are being fetched
+  if (!settings) {
+    return (
+      <div className="pt-24 pb-20">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
